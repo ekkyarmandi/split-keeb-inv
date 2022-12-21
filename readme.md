@@ -1,7 +1,9 @@
 # Split Keeb Inventory Management App
 
-<img src="static/images/kebyboards.jpg" width="500px" align="center">
-<p style="text-align: center;"><i>Corne Chocolate Low Profile Keyboard</i></p>  
+<p align="center">
+  <img src="static/images/kebyboards.jpg" width="500px">
+  <p style="text-align: center;"><i>Corne Chocolate Low Profile Keyboard</i></p>  
+</p>
 
 Split Keeb is my small business for selling split mechanial keyboards like [CRKBD](https://github.com/foostan/crkbd). This app was about the spareparts inventory management app. To show me the spare part remain in the inventory, reorder reminder, spare part out, build logs, and the summary of how much I have spent on the materials and how much I have earned from the product sellings since the business is starting.
 
