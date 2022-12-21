@@ -87,6 +87,6 @@ If port 8000 is doesn't work for you can change it with 5000 or any number you l
 
 ### App Pages
 
-Home Page
-:-------------------------:
-![Home Page](/static/images/1_home_page.png)
+Home Page | Order Table
+:-------------------------:|:-------------------------:
+![Home Page](/static/images/1_home_page.png)|![Order Table](/static/images/2_my_order_page.png)
