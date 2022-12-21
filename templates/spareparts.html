@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+<div class="container inventory mt-4">
+    <div class="back">
+        <a class="text-decoration-none text-secondary" href="/">&curvearrowleft; Back</a>
+    </div>
+    <table class="table table-sm small table-hover align-middle mt-4">
+        <thead>
+            <tr>
+                <th>Part Number</th>
+                <th>Status</th>
+                <th>Kind</th>
+                <th>Part Name</th>
+                <th>Stocks (unit)</th>
+                <th>Perunit Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sparepart in object_list %}
+            <tr id="{{ sparepart.id }}" class="{% if sparepart.in_stock == 0 %}empty-stock{% endif %}">
+                <td>#{{ sparepart.id }}</td>
+                <td>{{ sparepart.status }}</td>
+                <td>{{ sparepart.kind }}</td>
+                <td><a class="text-decoration-none text-secondary fw-bold" target="_blank" href="{{ sparepart.link }}">{{ sparepart.name }}</a></td>
+                <td>{{ sparepart.in_stock }}</td>
+                <td>Rp {{ sparepart.price_perunit|floatformat:0|intcomma }}/unit</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#edit-sparepart-modal" onclick="editSparepartModal(this)">Edit</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'components/modal-sparepart.html' %}
+{% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/edit-sparepart.js' %}"></script>
+{% endblock script %}
+    

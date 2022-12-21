@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+<div class="container orders mt-4">
+    <div class="back">
+        <a class="text-decoration-none text-secondary" href="/">&curvearrowleft; Back</a>
+    </div>
+    <a class="btn btn-primary btn-sm mt-4" href="{% url 'new-order' %}">Add New Order</a>
+    <h5 class="text-secondary mt-3">
+        <span>Total:</span>
+        <span>Rp</span>
+        <span>{{ total_order|intcomma }}</span>
+    </h5>
+    <table class="table table-sm small table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Order Date</th>
+                <th>Arrival Date</th>
+                <th>Arrival Days</th>
+                <th>Platform</th>
+                <th>Origin</th>
+                <th>Qty.</th>
+                <th>Product Price</th>
+                <th>Shipping Cost</th>
+                <th>Tax</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in object_list %}
+            <tr>
+                <td>{{ order.date }}</td>
+
+                {% if order.arrival %}
+                <td>{{ order.arrival }}</td>
+                {% else %}
+                <td class="text-danger">On Delivery</td>
+                {% endif %} {% if order.arrival_days == 1 %}
+                <td>{{ order.arrival_days }} day</td>
+                {% elif order.arrival_days > 1 %}
+                <td>{{ order.arrival_days }} days</td>
+                {% else %}
+                <td>On Delivery</td>
+                {% endif %}
+
+                <td>{{ order.shopping_platform }}</td>
+                <td>{{ order.origin }}</td>
+                <td>{{ order.ordersparepart_set.count }}</td>
+                
+                {% if order.is_usd %}
+                    <td>Rp {{ order.sum_product_price|mul:order.usd_to_idr|floatformat:0|intcomma }}</td>
+                    <td>Rp {{ order.shipping_fee|mul:order.usd_to_idr|floatformat:0|intcomma }}</td>
+                    <td>Rp {{ order.total_tax|intcomma }} ({{ order.tax_percentage|floatformat:2 }}%)</td>
+                {% else %}
+                    <td>Rp {{ order.sum_product_price|floatformat:0|intcomma }}</td>
+                    <td>Rp {{ order.shipping_fee|floatformat:0|intcomma }}</td>
+                    <td>Rp {{ order.total_tax|intcomma }} ({{ order.tax_percentage|floatformat:2 }}%)</td>
+                {% endif %}
+                <td>
+                    <span>Rp</span>
+                    <span>{{ order.total_order|intcomma }}</span>
+                </td>
+                    
+                <td>
+                    <a class="btn btn-sm btn-primary" href="{% url 'edit-order' order.id %}">Edit</a>
+                    <a class="btn btn-sm btn-danger" href="{% url 'delete-order' order.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+            <!-- <tr class="fs-6 fw-bold">
+                <td class="text-center" colspan="9">Total Orders</td>
+                <td>
+                    <span>Rp</span>
+                    <span>{{ total_order|intcomma }}</span>
+                </td>
+                <td></td>
+            </tr> -->
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

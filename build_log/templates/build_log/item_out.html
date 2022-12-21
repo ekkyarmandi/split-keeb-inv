@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+    <div class="back mt-5">
+        <a class="text-decoration-none text-secondary" href="/">&curvearrowleft; Back</a>
+    </div>
+    <h1>Item Out</h1>
+    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#itemOutModal">New Item Out</button>
+    <table class="table table-hover table-sm mt-2 align-middle">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Item Name</th>
+                <th>Related Build</th>
+                <th>Stock Out</th>
+                <th>Price Perunit</th>
+                <th>Notes</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.out_date }}</td>
+                <td>{{ item.sparepart.name }}</td>
+
+                {% if item.build_log %}
+                <td>Build Log #{{ item.build_log.id }}</td>
+                {% else %}
+                <td>-</td>
+                {% endif %}
+
+                <td>{{ item.stock_out }}</td>
+                <td>
+                    <span>Rp</span>
+                    <span>{{ item.sparepart.price_perunit|floatformat:0|intcomma }}</span>
+                    <span>/unit</span>
+                </td>
+                <td>{{ item.notes }}</td>
+                <td><a class="btn btn-danger btn-sm" href="{% url 'cancel-item' item.id %}">Cancel</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="itemOutModal" tabindex="-1" aria-labelledby="itemOutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{% url 'item-out' %}" method="POST">{% csrf_token %}
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="itemOutModalLabel">New Item Out</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">{{ form.as_p }}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

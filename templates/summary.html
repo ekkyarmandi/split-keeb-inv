@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+<div class="container summary mt-5">
+    <div class="back">
+        <a class="text-decoration-none text-secondary" href="/">&curvearrowleft; Back</a>
+    </div>
+    <h1>Summary</h1>
+    <p class="m-0 mt-4">
+        <span>Starting:</span>
+        <span>{{ starting|date:'d M Y' }}</span>
+        <span>&TildeTilde;</span>
+        <span>{{ starting|naturaltime }}</span>
+    </p>
+    <div class="summary__wrapper mt-4">
+        <div class="inventory ps-3">
+            <h3>Inventory Value</h3>
+            <h5 class="m-0">
+                <span>Rp</span>
+                <span>{{ total_order|floatformat:0|intcomma }}</span>
+            </h5>
+        </div>
+        <div class="other d-flex gap-3 mt-5">
+            <div class="ps-3 me-4">
+                <h5>For Personal Use</h5>
+                <p class="m-0">
+                    <span>Rp</span>
+                    <span>{{ personal_use|floatformat:0|intcomma }}</span>
+                </p>
+            </div>
+            <div class="ps-3 me-4">
+                <h5>On Build</h5>
+                <p class="m-0">
+                    <span>Rp</span>
+                    <span>{{ on_build|floatformat:0|intcomma }}</span>
+                </p>
+            </div>
+            <div class="ps-3 me-4">
+                <h5>Wasted</h5>
+                <p class="m-0">
+                    <span>Rp</span>
+                    <span>{{ wasted_item|floatformat:0|intcomma }}</span>
+                </p>
+            </div>
+        </div>
+        <div class="profit d-flex gap-3 mt-5">
+            <div class="py-2 ps-3">
+                <h5>Loss</h5>
+                <p class="text-dark m-0">
+                    <span>Rp</span>
+                    <span>{{ loss|floatformat:0|intcomma }}</span>
+                </p>
+            </div>
+            <div class="py-2 ps-3">
+                <h5>Earned</h5>
+                <p class="text-dark m-0">
+                    <span>Rp</span>
+                    <span>{{ earned|floatformat:0|intcomma }}</span>
+                </p>
+            </div>
+            <div class="py-2 ps-3">
+                <h5>Profit</h5>
+                <p class="text-dark m-0">
+                    <span>Rp</span>
+                    <span>{{ profit|floatformat:0|intcomma }}</span>
+                    <span>({{ profit|div:earned|mul:100|floatformat:2 }}%)</span>
+                </p>
+            </div>
+        </div>
+        <div class="mt-5">
+            <div>
+                <p>
+                    <span class="fw-bold">Inventory value</span>
+                    <span>is sum of total order.</span>
+                </p>
+                <p>
+                    <span class="fw-bold">For Personal Use</span>
+                    <span>is the sum of item value being used as my personal keyboard.</span>
+                </p>
+                <p>
+                    <span class="fw-bold">On Build</span>
+                    <span>is sum of material cost for an <i>on build</i> project.</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Wasted</span>
+                    <span>is sum of material value for not being used.</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Loss</span>
+                    <span>is total inventory value substracted by <i>earned</i>.</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Earned</span>
+                    <span>is sum of sold price for sold out keyboard.</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Profit</span>
+                    <span>the percentage of product marked up + service fee from earned value.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

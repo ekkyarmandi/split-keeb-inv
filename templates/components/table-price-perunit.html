@@ -1,0 +1,50 @@
+<h3>Price Perunit</h3>
+<button type="button" class="btn btn-warning btn-sm" onclick="calculatePricePerunit()">Calculate</button>
+<table id="perunitPrice" class="table table-sm w-auto table-borderless mt-3">
+    <tbody></tbody>
+</table>
+
+{% block scripts %}
+<script>
+    function calculatePricePerunit() {
+
+        // Get all items attributes
+        let item_names = document.querySelectorAll("input#itemName");
+        let item_units = document.querySelectorAll("input#itemUnit");
+        let item_qties = document.querySelectorAll("input#itemQty");
+        let item_prices = document.querySelectorAll("input#itemPrice");
+        let shipping_cost = parseInt(document.getElementById("shippingCost").value);
+        let tax = parseInt(document.getElementById("shippingTax").value);
+        let array_price = [];
+        let total_price = 0;
+
+        // Calculate the total price
+        for (let i = 0; i < item_prices.length; i++) {
+            let price = item_prices[i].value;
+            let qty = item_qties[i].value;
+            let total = price * qty;
+            total_price += total;
+            array_price.push(total);
+        }
+
+        // Calculate the total amount
+        let total_amount = total_price + shipping_cost + tax;
+
+        // Get table
+        const table = document.getElementById("perunitPrice");
+        const tbody = table.querySelector("tbody");
+        
+        for (let i in array_price) {
+            let perc = array_price[i] / total_price;
+            let perunit_price = (perc*total_amount)/(item_qties[i].value*item_units[i].value);
+            tbody.innerHTML += `
+                <tr>
+                    <td>${item_names[i].value}</td>
+                    <td>=</td>
+                    <td>Rp ${Math.round(perunit_price).toLocaleString("en")}</td>
+                </tr>`;
+        }
+
+    }
+</script>
+{% endblock scripts %}

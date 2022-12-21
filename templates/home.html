@@ -1,0 +1,61 @@
+{% extends 'base.html' %} {% load static %} {% load humanize %} {% block content %}
+<div class="container my-4">
+    <a class="btn btn-sm btn-primary mt-4" href="{% url 'new-order' %}">Add New Order</a>
+    <div class="my-4">
+        <h3>Track My Order</h3>
+        <div class="row my-2">
+            {% if object_list|length == 0 %}
+            <p>No order to track</p>
+            {% endif %} {% for order in object_list %}
+            <div class="col-3">
+                <div class="card" id="{{ order.id }}">
+                    <div class="card-body">
+                        <div class="card-title my-auto"><strong>Order#{{ order.id}} {{ order.shopping_platform }}</strong></div>
+                        <p class="card-subtitle text-secondary">{{ order.date|date:'Y/m/d' }} {{ order.origin }}</p>
+                        <table class="table table-sm small w-auto table-borderless mt-2">
+                            <tbody>
+                                <tr>
+                                    <td>Total Item</td>
+                                    <td>:</td>
+                                    <td>{{ order.ordersparepart_set.count }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Product Cost</td>
+                                    <td>:</td>
+                                    <td>Rp {{ order.sum_product_price|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shipping Cost</td>
+                                    <td>:</td>
+                                    <td>Rp {{ order.shipping_fee|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tax</td>
+                                    <td>:</td>
+                                    <td>Rp {{ order.total_tax|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Spent</td>
+                                    <td>:</td>
+                                    <td>Rp {{ order.total_order|intcomma }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-success"><i class="fa-regular fa-paper-plane"></i> Track</button>
+                            <button class="btn btn-sm btn-outline-primary" data-card-target="{{ order.id }}" data-bs-toggle="modal" data-bs-target="#arrival-modal" onclick="renameModalTitle(this)">
+                                <i class="fa-regular fa-calendar"></i> Update Arrival
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+{% include 'components/modal-arrival.html' %} {% endblock content %} {% block script %}
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock script %}

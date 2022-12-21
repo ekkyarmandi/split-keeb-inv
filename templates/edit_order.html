@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+<div class="container edit-order-container mt-4">
+    <div class="back">
+        <a class="text-decoration-none text-secondary" href="{% url 'orders' %}">&curvearrowleft; Back to Orders</a>
+    </div>
+    <form action="{% url 'edit-order' order.id %}" method="post">{% csrf_token %}
+        <div class="mt-4">
+            <div class="row">
+                <div class="col-3 mt-3">
+                    <label for="order-date">Order Date</label>
+                    <div>
+                        <input name="order-date" id="order-date" class="form-control" type="date" value="{{ order.date|date:'Y-m-d'}}" />
+                    </div>
+                </div>
+                <div class="col-3 mt-3">
+                    <label for="arrival-date">Arrival Date</label>
+                    <div>
+                        {% if order.arrival %}
+                        <input name="arrival-date" id="arrival-date" class="form-control" type="date" value="{{ order.arrival|date:'Y-m-d' }}" />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mt-3">
+                    <label for="tracking-link">Tracking Link</label>
+                    <div>
+                        <input name="tracking-link" id="tracking-link" class="form-control" type="text" value="{{ order.track_order_link }}" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mt-3">
+                    <label for="shipping-origin">Shipping Origin</label>
+                    <div class="input-group flex-nowrap">
+                        <input name="shipping-origin" id="shipping-origin" type="text" class="form-control" placeholder="Type Origin" value="{{ order.origin }}" />
+                    </div>
+                </div>
+                <div class="col mt-3">
+                    <label for="shipping-cost">Shipping Fee</label>
+                    <div class="input-group flex-nowrap">
+                        
+                        {% if order.is_usd %}
+                        <span id="currency" class="input-group-text">$</span>
+                        <input name="shipping-cost" id="shipping-cost" type="number" class="form-control" value="{{ order.shipping_fee }}" />
+                        {% else %}
+                        <span id="currency" class="input-group-text">Rp</span>
+                        <input name="shipping-cost" id="shipping-cost" type="number" class="form-control" value="{{ order.shipping_fee|floatformat:0 }}" />
+                        {% endif %}
+                            
+                    </div>
+                    <input name="is-usd" id="is-usd" type="checkbox" {% if order.is_usd %}checked{% endif %} style="display:none;"/>
+                </div>
+                <div class="col mt-3">
+                    <label for="tax">1 USD</label>
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text">Rp</span>
+                        <input name="usd-to-idr" id="usd-to-idr" type="number" class="form-control" value="{{ order.usd_to_idr|floatformat:0 }}" />
+                    </div>
+                </div>
+                <div class="col mt-3">
+                    <label for="tax">Tax</label>
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text">Rp</span>
+                        <input name="tax" id="tax" type="number" class="form-control" value="{{ order.total_tax }}" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-container border rounded-2 mt-3 mb-3 px-2">
+                {% for invoice in invoices %}
+                <div class="order-items row p-1">
+                    <div class="col py-1">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="item-name">Item Name</label>
+                                <div>
+                                    <input name="item-name" id="item-name" class="form-control form-control-sm" type="text" placeholder="i.e. Arduino Pro Micro" value="{{ invoice.sparepart.name }}" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label for="item-kind">Item Kind</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Kind</button>
+                                    <ul class="dropdown-menu">
+                                        {% for kind in kinds %}
+                                        <li class="dropdown-item small">{{ kind }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input name="item-kind" id="item-kind" class="form-control form-control-sm" type="text" placeholder="i.e. Pro Micro" value="{{ invoice.sparepart.kind }}" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label for="item-link">Item Link</label>
+                                <div>
+                                    <input name="item-link" id="item-link" class="form-control form-control-sm" type="text" placeholder="https://www.item-link.com" value="{{ invoice.sparepart.link }}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="price-wrapper row mt-3 mb-1">
+                            <div class="col-8">
+                                <label for="item-price">Item Price</label>
+                                <div class="input-group input-group-sm">
+                                    
+                                    {% if order.is_usd %}
+                                    <span class="input-group-text currency">$</span>
+                                    <input name="item-price" id="item-price" oninput="priceInputListener(this)" class="form-control" type="number" value="{{ invoice.price }}" />
+                                    {% else %}
+                                    <span class="input-group-text currency">Rp</span>
+                                    <input name="item-price" id="item-price" oninput="priceInputListener(this)" class="form-control" type="number" value="{{ invoice.price|floatformat:0 }}" />
+                                    {% endif %}
+                                        
+                                    <span class="input-group-text">Qty</span>
+                                    <input name="item-qty" id="item-qty" oninput="priceInputListener(this)" class="form-control" type="number" min="0" value="{{ invoice.qty }}" />
+                                    <span class="input-group-text">Unit</span>
+                                    <input name="item-unit" id="item-unit" oninput="priceInputListener(this)" class="form-control" type="number" min="0" value="{{ invoice.unit }}" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label for="price-perunit">Price Perunit</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text currency">Rp</span>
+                                    <input name="price-perunit" id="price-perunit" class="form-control" type="number" value="{{ invoice.sparepart.price_perunit }}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <p class="close-row-info m-0 small" style="display: none"><i class="fa-solid fa-circle-exclamation"></i> hold CTRL and click row to cancel new item</p>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <button class="btn btn-sm btn-primary" type="button" onclick="duplicateFirstItem()">Add More Item</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mt-3">
+                    <label for="order-notes">Notes</label>
+                    <div>
+                        <textarea class="form-control" name="order-notes" id="order-notes"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/orders.js' %}"></script>
+{% endblock script %}

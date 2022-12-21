@@ -1,0 +1,21 @@
+<div class="modal fade" id="arrival-modal" tabindex="-1" aria-labelledby="arrival-title" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="arrival-title">title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'update-arrival' pk=0 %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <label for="arrival-date" class="form-label">Arrival date</label>
+                    <input name="arrival-date" id="arrival-date" class="form-control" type="date" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

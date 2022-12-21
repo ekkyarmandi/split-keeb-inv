@@ -1,0 +1,67 @@
+/* Add New Orders */
+.item-container {
+    background-color: #f3f3f3;
+}
+
+/* Invetories */
+.inventory table tr.empty-stock {
+    background-color: #fff2f2;
+}
+
+/* Edit Order */
+#currency:hover {
+    cursor: pointer;
+}
+
+/* New Build */
+.new-build-container table tbody tr td:nth-child(2) {
+    min-width: 540px;
+}
+.new-build-container table tbody tr td:nth-child(3) {
+    min-width: 220px;
+}
+.new-build-container table tbody tr td:nth-child(4),
+.new-build-container table tbody tr td:nth-child(5) {
+    width: 120px;
+}
+.new-build-container table tbody tr td:nth-child(6),
+.new-build-container table tbody tr td:nth-child(7) {
+    width: 135px;
+}
+.new-build-container #close-button:hover {
+    color: grey;
+}
+.new-build-container table tbody tr:first-child #close-button {
+    display: none;
+}
+.new-build-container input.readonly {
+    pointer-events: none;
+}
+
+/* Summary */
+.summary .d-flex > div {
+    min-width: 120px;
+}
+.summary .other > div:first-child {
+    border-left: 10px solid #7fe9de;
+}
+.summary .other div:nth-child(2) {
+    border-left: 10px solid #ffe15d;
+}
+.summary .other div:last-child {
+    border-left: 10px solid #ff6464;
+}
+.summary__wrapper .inventory:first-child {
+    border-left: 10px solid #82cd47;
+}
+.summary__wrapper .profit > div:first-child {
+    width: 250px;
+    background-color: #ffbfbf;
+    border-left: 10px solid #ff6464;
+}
+.summary__wrapper .profit > div:nth-child(2),
+.summary__wrapper .profit > div:last-child {
+    width: 250px;
+    background-color: #c2e6a5;
+    border-left: 10px solid #82cd47;
+}

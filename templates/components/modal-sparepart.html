@@ -1,0 +1,27 @@
+<div class="modal fade" id="edit-sparepart-modal" tabindex="-1" aria-labelledby="edit-sparepart-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'edit-sparepart' pk=0 %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div>
+                        <label for="sparepart-name" class="form-label">Name</label>
+                        <input name="sparepart-name" id="sparepart-name" class="form-control" type="text" />
+                    </div>
+                    <div>
+                        <label for="sparepart-kind" class="form-label">Kind</label>
+                        <input name="sparepart-kind" id="sparepart-kind" class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

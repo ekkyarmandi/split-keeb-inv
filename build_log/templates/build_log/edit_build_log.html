@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load mathfilters %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+<div class="container new-build-container mt-5">
+    <form action="#" method="POST">
+        {% csrf_token %}
+        <div class="back">
+            <a class="text-decoration-none text-secondary" href="{% url 'build-logs' %}">&curvearrowleft; Back</a>
+        </div>
+        <div class="new-build my-4">
+            <div>
+                <label for="build-title">Title</label>
+                <input name="build-title" id="build-title" class="form-control" type="text" value="{{ build_log.title }}" />
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <div>
+                    <label for="build-date">Build Date</label>
+                    <input name="build-date" id="build-date" class="form-control" type="date" value="{{ build_log.build_date|date:'Y-m-d' }}" />
+                </div>
+                <div>
+                    <label for="build-hours">Build Hours</label>
+                    <input name="build-hours" id="build-hours" class="form-control" type="number" value="{{ build_log.build_hours }}" />
+                </div>
+            </div>
+            <div class="mt-3">
+                <label for="build-notes">Notes</label>
+                <textarea name="build-notes" id="build-notes" class="form-control">{{ build_log.notes }}</textarea>
+            </div>
+            <div class="material mt-3">
+                <h5>Materials</h5>
+                <button id="add-more" class="btn btn-primary btn-sm mt-2 mb-3" type="button">Add More</button>
+                <table class="table table-sm small align-middle w-auto">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Sparepart</th>
+                            <th>Kind</th>
+                            <th>Stock Left</th>
+                            <th>Stock Out</th>
+                            <th>Unit Cost</th>
+                            <th>Total Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span id="close-button" class="" type="button" onclick="removeRow(this)"><i class="fa-solid fa-circle-xmark"></i></span>
+                            </td>
+                            <td>
+                                <select name="material-select" id="material-select" class="form-select form-select-sm border-0" onchange="selectSparepart(this)">
+                                    <option value="None">Select</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="material-kind" id="material-kind" class="form-select form-select-sm border-0" onchange="selectKind(this)">
+                                    <option value="None">Select</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input id="material-stock-left" name="material-stock-left" class="form-control form-control-sm readonly border-0" type="number" value="0" readonly/>
+                            </td>
+                            <td>
+                                <input id="material-stock-out" name="material-stock-out" type="number" class="form-control form-control-sm border-0" min="0" value="0" oninput="calculateTotalCost(this)" />
+                            </td>
+                            <td id="material-perunit-price">Rp 0</td>
+                            <td>Rp 0</td>
+                        </tr>
+                        
+                        {% for item in build_log.itemout_set.all %}
+                        <tr>
+                            <td>
+                                <span id="close-button" class="" type="button" onclick="removeRow(this)"><i class="fa-solid fa-circle-xmark"></i></span>
+                            </td>
+                            <td>
+                                <select name="material-select" id="material-select" class="form-select form-select-sm border-0" onchange="selectSparepart(this)">
+                                    <option value="{{ item.sparepart.id }}">{{ item.sparepart.name }}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="material-kind" id="material-kind" class="form-select form-select-sm border-0" onchange="selectKind(this)">
+                                    {% for kind in kinds %}
+                                    <option value="{{ kind }}" {% if kind == item.sparepart.kind %}selected{% endif %}>{{ kind }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <input id="material-stock-left" name="material-stock-left" class="form-control form-control-sm readonly border-0" type="number" value="{{ item.sparepart.in_stock }}" readonly/>
+                            </td>
+                            <td>
+                                <input id="material-stock-out" name="material-stock-out" type="number" class="form-control form-control-sm border-0" min="0" max="{{ item.sparepart.in_stock|add:item.stock_out }}" value="{{ item.stock_out }}" oninput="calculateTotalCost(this)"/>
+                            </td>
+                            <td id="material-perunit-price" value="{{ item.sparepart.price_perunit }}">Rp {{ item.sparepart.price_perunit|floatformat:0|intcomma }}</td>
+                            <td value="{{ item.sparepart.price_perunit|mul:item.stock_out }}">Rp {{ item.sparepart.price_perunit|floatformat:0|mul:item.stock_out|intcomma }}</td>
+                        </tr>
+                        {% endfor %}
+                            
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td name="material-cost" id="material-cost">Rp 0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end">
+                    <button id="submit-button" class="btn btn-success btn-sm" type="button">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/new-build-log.js' %}"></script>
+{% endblock script %}
